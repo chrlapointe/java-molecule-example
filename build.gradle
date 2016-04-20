@@ -1,5 +1,17 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'com.moowork.gradle:gradle-node-plugin:0.8'
+    }
+}
+
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'jacoco'
+apply plugin: 'com.moowork.node'
 
 defaultTasks 'build'
 
@@ -12,6 +24,10 @@ def libs = [
         molecule          : 'com.vtence.molecule:molecule:0.7',
         simple            : 'org.simpleframework:simple:5.1.6',
         hamcrest_all      : 'org.hamcrest:hamcrest-all:1.3',
+        hamcrest_dom      : ['com.google.guava:guava:15.0',
+                             'org.antlr:antlr-runtime:3.0.1',
+                             'com.3levers.cssselectors:cssselectors:1.0@jar',
+                             'org.testinfected.hamcrest-matchers:dom-matchers:1.7@jar'],
         junit             : 'junit:junit:4.11@jar',
         molecule_test     : 'com.vtence.molecule:molecule:0.7:tests',
         nekohtml          : 'net.sourceforge.nekohtml:nekohtml:1.9.21',
@@ -27,12 +43,19 @@ dependencies {
 
     testCompile libs.hamcrest_all
     testCompile libs.junit
+    testCompile libs.hamcrest_dom
     testCompile libs.molecule_test
     testCompile libs.nekohtml
     testCompile libs.selenium_firefox
     testCompile libs.windowlicker_core
     testCompile libs.windowlicker_web
 }
+
+task jsTest(dependsOn: ['npm_install', 'npm_test'])
+
+test.dependsOn jsTest
+
+task coverage(dependsOn: ['test', 'jacocoTestReport'])
 
 mainClassName = 'yose.Yose'
 applicationName = 'yose-molecule'

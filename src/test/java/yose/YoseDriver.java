@@ -8,11 +8,12 @@ import yose.pages.HomePage;
 import java.io.IOException;
 
 public class YoseDriver {
-    private final Yose yose;
+    private final int port;
+    private Yose yose;
     private AsyncWebDriver browser;
 
     public YoseDriver(int port) {
-        this.yose = new Yose(port);
+        this.port = port;
     }
 
     private AsyncWebDriver browser() {
@@ -23,11 +24,11 @@ public class YoseDriver {
     }
 
     public void start() throws IOException {
-        yose.start();
+        yose = Yose.launch(String.valueOf(port));
     }
 
     public void stop() throws IOException {
-        yose.stop();
+        if (yose != null) yose.stop();
         if (browser != null) browser.quit();
     }
 

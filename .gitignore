@@ -6,3 +6,6 @@ build
 .classpath
 .project
 .settings/
+*.ipr
+*.iws
+node_modules
